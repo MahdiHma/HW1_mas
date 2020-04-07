@@ -15,7 +15,7 @@ public class City {
     public String toString() {
         return "City{" +
                 "place name='" + place_name + '\'' +
-                ", center=" + Arrays.toString(center) +
+                ", center =" + Arrays.toString(center) +
                 '}';
     }
 }
