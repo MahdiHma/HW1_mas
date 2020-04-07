@@ -4,13 +4,11 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,7 +19,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.hw1_mas.models.City;
 import com.example.hw1_mas.utilities.NetWorkUtil;
@@ -33,12 +30,11 @@ import com.google.gson.JsonObject;
 import org.json.JSONObject;
 
 import java.net.URL;
-import java.text.BreakIterator;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     EditText locationSearchBox;
-    TextView searchResultTv;
+    TextView searchErrorTv;
     Button searchBtn;
     LinearLayout llResults;
     Handler mHandler;
@@ -46,13 +42,15 @@ public class MainActivity extends AppCompatActivity {
     private static final int SHOW_CITIES = 100;
     private static final int SHOW_WAITING_BAR = 101;
     private static final int UNSHOW_WAITING__BAR =102;
+    private static final int REQUEST_ERROR = 103;
+    private static final int SEARCH_NOT_FOUND = 104;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         locationSearchBox = findViewById(R.id.et_location_search);
-        searchResultTv = findViewById(R.id.tv_search_result);
+        searchErrorTv = findViewById(R.id.tv_search_error);
         searchBtn = findViewById(R.id.btn_search);
         llResults = findViewById(R.id.ll_results);
         progressBar = findViewById(R.id.pb_results);
@@ -73,9 +71,6 @@ public class MainActivity extends AppCompatActivity {
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        Message unShowMesg = new Message();
-                        unShowMesg.what = UNSHOW_WAITING__BAR;
-                        mHandler.sendMessage(unShowMesg);
                     }
                 });
                 handleRequest.start();
@@ -96,6 +91,11 @@ public class MainActivity extends AppCompatActivity {
                         Gson gson = new Gson();
                         JsonObject gResponse = gson.fromJson(response.toString(), JsonObject.class);
                         features = (JsonArray) gResponse.get("features");
+                        if (features.size() == 0){
+                            Message message = new Message();
+                            message.what = SEARCH_NOT_FOUND;
+                            mHandler.sendMessage(message);
+                        }
                         ArrayList<City> resultCities = new ArrayList<>();
                         for (JsonElement feature : features) {
                             resultCities.add(gson.fromJson(feature,City.class));
@@ -104,23 +104,29 @@ public class MainActivity extends AppCompatActivity {
                         message.what = SHOW_CITIES;
                         message.obj = resultCities;
                         mHandler.sendMessage(message);
+                        Message unShowMesg = new Message();
+                        unShowMesg.what = UNSHOW_WAITING__BAR;
+                        mHandler.sendMessage(unShowMesg);
                     }
                 }, new Response.ErrorListener() {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // TODO: Handle error
+                        Message message = new Message();
+                        message.what = REQUEST_ERROR;
+                        mHandler.sendMessage(message);
+
                     }
                 });
         queue.add(jsonObjectRequest);
     }
 
 
+    @SuppressLint("HandlerLeak")
     @Override
     protected void onResume() {
         super.onResume();
         mHandler = new Handler(){
-            @SuppressLint("HandlerLeak")
             @Override
             public void handleMessage(@NonNull Message msg) {
                 super.handleMessage(msg);
@@ -130,11 +136,15 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case SHOW_WAITING_BAR:
                         progressBar.setVisibility(View.VISIBLE);
-                        Log.i("handler", "show");
                         break;
                     case UNSHOW_WAITING__BAR:
                         progressBar.setVisibility(View.INVISIBLE);
-                        Log.i("handler", "unshow");
+                        break;
+                    case SEARCH_NOT_FOUND:
+                        searchErrorTv.setText(R.string.city_not_found);
+                        break;
+                    case REQUEST_ERROR:
+                        searchErrorTv.setText(R.string.error_in_request);
                         break;
                     default:
                         throw new IllegalStateException("Unexpected value: " + msg.what);
@@ -144,12 +154,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showCities(ArrayList<City> cities) {
+        llResults.removeAllViews();
         for (City city : cities) {
             Button btn = new Button(this);
             btn.setText(city.getPlace_name());
             llResults.addView(btn);
         }
-
-        ;
+        if (cities.size()!=0)
+            searchErrorTv.setText("");
     }
 }
