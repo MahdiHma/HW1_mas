@@ -16,14 +16,12 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.hw1_mas.models.City;
-import com.example.hw1_mas.utilities.NetWorkUtil;
-import com.example.hw1_mas.utilities.NetWorkUtil.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 //import com.mapbox.api.geocoding.v5.MapboxGeocoding;
-
+import com.example.hw1_mas.utilities.NetWorkUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -67,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
                         Gson gson = new Gson();
                         JsonObject gResponse = gson.fromJson(response.toString(), JsonObject.class);
                         features = (JsonArray) gResponse.get("features");
-                        City city = gson.fromJson(features,City.class);
+                        City city = gson.fromJson(features.get(0), City.class);
                         searchResultTv.setText("Response: " + city.toString());
                     }
                 }, new Response.ErrorListener() {
