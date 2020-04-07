@@ -22,12 +22,17 @@
         android:text="search" />
 
     <TextView
-        android:id="@+id/tv_search_result"
+        android:id="@+id/tv_search_error"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:text="" />
-
+    <ProgressBar
+        android:id="@+id/pb_results"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"/>
     <ScrollView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
@@ -36,7 +41,8 @@
             android:id="@+id/ll_results"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            />
+            android:orientation="vertical">
+        </LinearLayout>
     </ScrollView>
+
 </LinearLayout>
