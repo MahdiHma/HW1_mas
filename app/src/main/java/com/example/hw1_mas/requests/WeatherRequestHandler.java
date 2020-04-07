@@ -28,7 +28,7 @@ public class WeatherRequestHandler {
             WeatherRequestHandler.requestHandler = new WeatherRequestHandler(context);
         }
         Log.i("salallllmmmmm", "sallllllllllllllll");
-        url = WeatherURLBuilder.mapBoxBuildUrl(0,0).toString();
+//        url = WeatherURLBuilder.mapBoxBuildUrl(0,0).toString();
         requestQueue.add(WeatherRequestHandler.buildRequest(url));
     }
 
