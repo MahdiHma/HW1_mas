@@ -13,8 +13,8 @@ public class WeatherURLBuilder {
     private static final String WeatherAPIToken = "278a92b995b649e180a132552200504";
     private static final String TAG = "built url";
 
-    public static URL mapBoxBuildUrl(int longitude, int latitude) {
-        String place = String.valueOf(longitude) + ',' + latitude;
+    public static URL weatherApiParse(int latitude, int longitude) {
+        String place = String.valueOf(latitude) + ',' + longitude;
         Uri builtUri = Uri.parse(WeatherApiUrl).buildUpon()
                 .appendQueryParameter(placeQuery, place)
                 .appendQueryParameter(TOKEN_PARAM, WeatherAPIToken)

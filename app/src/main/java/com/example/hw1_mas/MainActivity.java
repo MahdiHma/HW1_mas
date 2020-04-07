@@ -1,6 +1,7 @@
 package com.example.hw1_mas;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -42,9 +43,10 @@ public class MainActivity extends AppCompatActivity {
     ProgressBar progressBar;
     private static final int SHOW_CITIES = 100;
     private static final int SHOW_WAITING_BAR = 101;
-    private static final int UNSHOW_WAITING__BAR =102;
+    private static final int UNSHOW_WAITING__BAR = 102;
     private static final int REQUEST_ERROR = 103;
     private static final int SEARCH_NOT_FOUND = 104;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,14 +95,14 @@ public class MainActivity extends AppCompatActivity {
                         Gson gson = new Gson();
                         JsonObject gResponse = gson.fromJson(response.toString(), JsonObject.class);
                         features = (JsonArray) gResponse.get("features");
-                        if (features.size() == 0){
+                        if (features.size() == 0) {
                             Message message = new Message();
                             message.what = SEARCH_NOT_FOUND;
                             mHandler.sendMessage(message);
                         }
                         ArrayList<City> resultCities = new ArrayList<>();
                         for (JsonElement feature : features) {
-                            resultCities.add(gson.fromJson(feature,City.class));
+                            resultCities.add(gson.fromJson(feature, City.class));
                         }
                         Message message = new Message();
                         message.what = SHOW_CITIES;
@@ -128,11 +130,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        mHandler = new Handler(){
+        mHandler = new Handler() {
             @Override
             public void handleMessage(@NonNull Message msg) {
                 super.handleMessage(msg);
-                switch (msg.what){
+                switch (msg.what) {
                     case SHOW_CITIES:
                         showCities((ArrayList<City>) msg.obj);
                         break;
@@ -155,14 +157,25 @@ public class MainActivity extends AppCompatActivity {
         };
     }
 
+    private void switchPage() {
+        Intent intent = new Intent(this, WeatherActivity.class);
+        startActivity(intent);
+    }
+
     private void showCities(ArrayList<City> cities) {
         llResults.removeAllViews();
         for (City city : cities) {
             Button btn = new Button(this);
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    switchPage();
+                }
+            });
             btn.setText(city.getPlace_name());
             llResults.addView(btn);
         }
-        if (cities.size()!=0)
+        if (cities.size() != 0)
             searchErrorTv.setText("");
     }
 }
