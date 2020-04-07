@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -29,7 +31,6 @@ public class WeatherActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private LinearLayout linearLayout;
 
-
     public Handler getHandler() {
         return handler;
     }
@@ -38,7 +39,6 @@ public class WeatherActivity extends AppCompatActivity {
     private Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(@NonNull Message inputMessage) {
-            Log.i("HandleMessage", String.valueOf(inputMessage.what));
             super.handleMessage(inputMessage);
             switch (inputMessage.what) {
                 case SHOW_WAITING_BAR:
@@ -50,12 +50,25 @@ public class WeatherActivity extends AppCompatActivity {
                 case FOUND:
                     showForecast(inputMessage.obj);
                     break;
+                case ERROR_OCCUR:
+                    raiseError(inputMessage);
+                    break;
             }
         }
     };
 
+    private void raiseError(Message inputMessage) {
+        TextView textView = new TextView(this);
+        String error = (String) inputMessage.obj;
+        textView.setText(error);
+        textView.setTextColor(Color.parseColor("red"));
+        linearLayout.removeAllViews();
+        linearLayout.addView(textView);
+    }
+
     private void showForecast(Object days) {
         ArrayList<Weather> daysArray = (ArrayList<Weather>) days;
+        linearLayout.removeAllViews();
         for (Weather weather : daysArray) {
             TextView textView = new TextView(this);
             String state = String.valueOf(weather.getDay().getCondition().getState());
@@ -75,10 +88,16 @@ public class WeatherActivity extends AppCompatActivity {
         Intent intent = getIntent();
         progressBar = (ProgressBar) findViewById(R.id.WeatherProgressBar);
         linearLayout = findViewById(R.id.linearLayout);
-        double latitude = intent.getIntExtra("latitude", 0);
-        double longitude = intent.getIntExtra("longitude", 0);
+        float latitude = intent.getFloatExtra("latitude", 0);
+        float longitude = intent.getFloatExtra("longitude", 0);
         WeatherRequestHandler.addWeatherRequest(latitude, longitude, this, handler);
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 
 

@@ -48,12 +48,11 @@ public class WeatherRequestParser {
         weathers.add(current);
         JsonObject forecast = (JsonObject) weatherObject.get("forecast");
         JsonArray forecastDay = (JsonArray) forecast.get("forecastday");
-        Log.i("test", forecastDay.toString());
         for (JsonElement day : forecastDay) {
             Weather weatherN = jsonReader.fromJson(day, Weather.class);
             weathers.add(weatherN);
-
         }
+        Log.i("test", weathers.toString());
         return weathers;
 
     }
