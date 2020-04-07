@@ -30,6 +30,7 @@ public class WeatherActivity extends AppCompatActivity {
     public static final int UNSHOW_WAITING__BAR = 102;
     public static final int ERROR_OCCUR = 103;
     public static final int FOUND = 104;
+    private String notCachedError = "you did not have cached data and internet connection. please try again later";
     private ProgressBar progressBar;
     private LinearLayout linearLayout;
 
@@ -83,8 +84,10 @@ public class WeatherActivity extends AppCompatActivity {
         } else {
             try {
                 showForecast(WeatherRequestParser.loadJson(this));
-            } catch (IOException e){
-
+            } catch (Exception e) {
+                Message message = new Message();
+                message.obj = notCachedError;
+                raiseError(message);
             }
         }
     }

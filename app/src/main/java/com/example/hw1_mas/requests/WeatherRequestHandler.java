@@ -52,7 +52,6 @@ public class WeatherRequestHandler {
                 message.obj = WeatherRequestParser.fromJson(response);
                 ArrayList<Weather> r = WeatherRequestParser.fromJson(response);
                 WeatherRequestParser.saveJson(r, context);
-                WeatherRequestParser.loadJson(context);
 
                 requestHandler.handler.sendMessage(message);
             }

@@ -50,7 +50,7 @@ public class WeatherRequestParser {
 
     }
 
-    public static ArrayList<Weather> loadJson(Context context) throws IOException {
+    public static ArrayList<Weather> loadJson(Context context) throws IOException, NullPointerException {
         ArrayList<Weather> weathers = new ArrayList<>();
         FileReader scanner = new FileReader(file);
         Gson json = new GsonBuilder().setPrettyPrinting().create();

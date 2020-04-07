@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         if (!checkInternetConnectivity()) {
             showInternetNotConnectedError();
             switchPage(null, false);
+
         }
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -187,8 +188,8 @@ public class MainActivity extends AppCompatActivity {
         if (city != null) {
             intent.putExtra("latitude", city.getCenter()[1]);
             intent.putExtra("longitude", city.getCenter()[0]);
-            startActivity(intent);
         }
+        startActivity(intent);
     }
 
     private void showCities(ArrayList<City> cities) {
