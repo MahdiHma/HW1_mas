@@ -6,14 +6,14 @@ public class Day {
 //    private Date date = new Date();
     private String date;
     @SerializedName("avgtemp_c")
-    private int averageTemp ;
+    private double averageTemp ;
     private Condition condition;
 
     public String getDate() {
         return date;
     }
 
-    public int getAverageTemp() {
+    public double getAverageTemp() {
         return averageTemp;
     }
 
