@@ -2,6 +2,9 @@ package com.example.hw1_mas;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -11,6 +14,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -46,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int UNSHOW_WAITING__BAR = 102;
     private static final int REQUEST_ERROR = 103;
     private static final int SEARCH_NOT_FOUND = 104;
+    private static final int INTERNET_NOT_CONNECTED= 105;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,23 +61,27 @@ public class MainActivity extends AppCompatActivity {
         searchBtn = findViewById(R.id.btn_search);
         llResults = findViewById(R.id.ll_results);
         progressBar = findViewById(R.id.pb_results);
+        if (!checkInternetConnectivity()) {
+            showInternetNotConnectedError();
+        }
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String searchQuery = locationSearchBox.getText().toString();
                 final URL url = NetWorkUtil.mapBoxBuildUrl(searchQuery);
+                searchErrorTv.setText("");
                 Thread handleRequest = new Thread(new Runnable() {
                     @Override
                     public void run() {
                         Message showMessage = new Message();
                         showMessage.what = SHOW_WAITING_BAR;
                         mHandler.sendMessage(showMessage);
-                        sendSearchRequest(url);
                         try {
                             Thread.sleep(500);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
+                        sendSearchRequest(url);
                     }
                 });
                 handleRequest.start();
@@ -83,6 +92,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sendSearchRequest(URL url) {
+//        boolean isOnline = checkInternetConnectivity();
+//        if (!isOnline){
+//            Message unShowMesg = new Message();
+//            unShowMesg.what = UNSHOW_WAITING__BAR;
+//            mHandler.sendMessage(unShowMesg);
+//            Message message = new Message() ;
+//            message.what = INTERNET_NOT_CONNECTED;
+//            mHandler.sendMessage(message);
+//            return;
+//        }
         RequestQueue queue = Volley.newRequestQueue(this);
         final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, url.toString(), null, new Response.Listener<JSONObject>() {
@@ -114,6 +133,9 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        Message unShowMesg = new Message();
+                        unShowMesg.what = UNSHOW_WAITING__BAR;
+                        mHandler.sendMessage(unShowMesg);
                         Message message = new Message();
                         message.what = REQUEST_ERROR;
                         mHandler.sendMessage(message);
@@ -148,6 +170,9 @@ public class MainActivity extends AppCompatActivity {
                     case REQUEST_ERROR:
                         searchErrorTv.setText(R.string.error_in_request);
                         break;
+//                    case INTERNET_NOT_CONNECTED:
+//                        showInternetNotConnectedError();
+//                        break;
                     default:
                         throw new IllegalStateException("Unexpected value: " + msg.what);
                 }
@@ -177,7 +202,18 @@ public class MainActivity extends AppCompatActivity {
             btn.setText(city.getPlace_name());
             llResults.addView(btn);
         }
-        if (cities.size() != 0)
-            searchErrorTv.setText("");
+    }
+
+    private boolean checkInternetConnectivity() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return  activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+    }
+
+
+    private void showInternetNotConnectedError(){
+        Toast toast = Toast.makeText(getApplicationContext(), R.string.no_internet_connection,Toast.LENGTH_LONG);
+        toast.show();
     }
 }
