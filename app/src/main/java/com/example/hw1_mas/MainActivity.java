@@ -15,6 +15,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.hw1_mas.models.City;
+import com.example.hw1_mas.requests.WeatherRequestHandler;
 import com.example.hw1_mas.utilities.NetWorkUtil;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        WeatherRequestHandler.addWeatherRequest("", getApplicationContext());
 
         locationSearchBox = findViewById(R.id.et_location_search);
         searchResultTv = findViewById(R.id.tv_search_result);
