@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.pb_results);
         if (!checkInternetConnectivity()) {
             showInternetNotConnectedError();
+            switchPage(null, false);
         }
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -180,11 +181,14 @@ public class MainActivity extends AppCompatActivity {
         };
     }
 
-    private void switchPage(City city) {
+    private void switchPage(City city, boolean connection) {
         Intent intent = new Intent(this, WeatherActivity.class);
-        intent.putExtra("latitude", city.getCenter()[1]);
-        intent.putExtra("longitude", city.getCenter()[0]);
-        startActivity(intent);
+        intent.putExtra("connected", connection);
+        if (city != null) {
+            intent.putExtra("latitude", city.getCenter()[1]);
+            intent.putExtra("longitude", city.getCenter()[0]);
+            startActivity(intent);
+        }
     }
 
     private void showCities(ArrayList<City> cities) {
@@ -194,8 +198,7 @@ public class MainActivity extends AppCompatActivity {
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
-                    switchPage(city);
+                    switchPage(city, true);
 
                 }
             });

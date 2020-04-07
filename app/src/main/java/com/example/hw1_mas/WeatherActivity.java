@@ -19,7 +19,9 @@ import android.widget.TextView;
 
 import com.example.hw1_mas.models.Weather;
 import com.example.hw1_mas.requests.WeatherRequestHandler;
+import com.example.hw1_mas.requests.WeatherRequestParser;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class WeatherActivity extends AppCompatActivity {
@@ -57,6 +59,37 @@ public class WeatherActivity extends AppCompatActivity {
         }
     };
 
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_weather);
+        Message message = new Message();
+        message.what = SHOW_WAITING_BAR;
+        handler.sendMessage(message);
+        progressBar = (ProgressBar) findViewById(R.id.WeatherProgressBar);
+        linearLayout = findViewById(R.id.linearLayout);
+        getWeather();
+    }
+
+    public void getWeather() {
+        Intent intent = getIntent();
+
+        boolean isConnected = intent.getBooleanExtra("connected", false);
+        if (isConnected) {
+            float latitude = intent.getFloatExtra("latitude", 0);
+            float longitude = intent.getFloatExtra("longitude", 0);
+            WeatherRequestHandler.addWeatherRequest(latitude, longitude, this, handler);
+        } else {
+            try {
+                showForecast(WeatherRequestParser.loadJson(this));
+            } catch (IOException e){
+
+            }
+        }
+    }
+
+
     private void raiseError(Message inputMessage) {
         TextView textView = new TextView(this);
         String error = (String) inputMessage.obj;
@@ -77,22 +110,6 @@ public class WeatherActivity extends AppCompatActivity {
         }
     }
 
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_weather);
-        Message message = new Message();
-        message.what = SHOW_WAITING_BAR;
-        handler.sendMessage(message);
-        Intent intent = getIntent();
-        progressBar = (ProgressBar) findViewById(R.id.WeatherProgressBar);
-        linearLayout = findViewById(R.id.linearLayout);
-        float latitude = intent.getFloatExtra("latitude", 0);
-        float longitude = intent.getFloatExtra("longitude", 0);
-        WeatherRequestHandler.addWeatherRequest(latitude, longitude, this, handler);
-
-    }
 
     @Override
     public void onBackPressed() {
