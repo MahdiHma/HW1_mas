@@ -6,6 +6,14 @@ public class City {
     String place_name;
     int[] center;
 
+    public String getPlace_name() {
+        return place_name;
+    }
+
+    public int[] getCenter() {
+        return center;
+    }
+
     public City(String place_name, int[] center) {
         this.place_name = place_name;
         this.center = center;
