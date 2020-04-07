@@ -14,7 +14,7 @@ public class City {
     @Override
     public String toString() {
         return "City{" +
-                "place_name='" + place_name + '\'' +
+                "place name='" + place_name + '\'' +
                 ", center=" + Arrays.toString(center) +
                 '}';
     }
