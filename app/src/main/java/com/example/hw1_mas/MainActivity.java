@@ -12,13 +12,24 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.hw1_mas.models.City;
 import com.example.hw1_mas.utilities.NetWorkUtil;
 import com.example.hw1_mas.utilities.NetWorkUtil.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+//import com.mapbox.api.geocoding.v5.MapboxGeocoding;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.net.URL;
 import java.text.BreakIterator;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     EditText locationSearchBox;
@@ -47,18 +58,26 @@ public class MainActivity extends AppCompatActivity {
 
     private void sendSearchRequest(URL url) {
         RequestQueue queue = Volley.newRequestQueue(this);
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url.toString(),
-                new Response.Listener<String>() {
+        final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, url.toString(), null, new Response.Listener<JSONObject>() {
+
                     @Override
-                    public void onResponse(String response) {
-                        searchResultTv.setText("Response is: "+ response.substring(0,500));
+                    public void onResponse(JSONObject response) {
+                        JsonArray features;
+                        Gson gson = new Gson();
+                        JsonObject gResponse = gson.fromJson(response.toString(), JsonObject.class);
+                        features = (JsonArray) gResponse.get("features");
+                        City city = gson.fromJson(features,City.class);
+                        searchResultTv.setText("Response: " + city.toString());
                     }
                 }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                searchResultTv.setText("That didn't work!");
-            }
-        });
-        queue.add(stringRequest);
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO: Handle error
+
+                    }
+                });
+        queue.add(jsonObjectRequest);
     }
 }
