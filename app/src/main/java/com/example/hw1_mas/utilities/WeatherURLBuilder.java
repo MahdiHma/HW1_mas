@@ -12,12 +12,15 @@ public class WeatherURLBuilder {
     private static final String placeQuery = "q";
     private static final String WeatherAPIToken = "278a92b995b649e180a132552200504";
     private static final String TAG = "built url";
+    private static final String day = "days";
+    private static final String dayNumber = "7";
 
-    public static URL weatherApiParse(int latitude, int longitude) {
+    public static URL weatherApiParse(double latitude, double longitude) {
         String place = String.valueOf(latitude) + ',' + longitude;
         Uri builtUri = Uri.parse(WeatherApiUrl).buildUpon()
                 .appendQueryParameter(placeQuery, place)
                 .appendQueryParameter(TOKEN_PARAM, WeatherAPIToken)
+                .appendQueryParameter(day, dayNumber)
                 .build();
 
         URL url = null;

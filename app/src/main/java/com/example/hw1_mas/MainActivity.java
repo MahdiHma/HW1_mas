@@ -51,8 +51,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        WeatherRequestHandler.addWeatherRequest("", getApplicationContext());
-
         locationSearchBox = findViewById(R.id.et_location_search);
         searchErrorTv = findViewById(R.id.tv_search_error);
         searchBtn = findViewById(R.id.btn_search);
@@ -157,19 +155,23 @@ public class MainActivity extends AppCompatActivity {
         };
     }
 
-    private void switchPage() {
+    private void switchPage(City city) {
         Intent intent = new Intent(this, WeatherActivity.class);
+        intent.putExtra("latitude", city.getCenter()[0]);
+        intent.putExtra("longitude", city.getCenter()[1]);
         startActivity(intent);
     }
 
     private void showCities(ArrayList<City> cities) {
         llResults.removeAllViews();
-        for (City city : cities) {
+        for (final City city : cities) {
             Button btn = new Button(this);
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    switchPage();
+
+                    switchPage(city);
+
                 }
             });
             btn.setText(city.getPlace_name());

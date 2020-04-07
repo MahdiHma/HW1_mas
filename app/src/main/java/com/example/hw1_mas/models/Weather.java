@@ -6,7 +6,7 @@ import java.util.Date;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Day {
+public class Weather {
     //    private Date date = new Date();
     private String date;
     //    @SerializedName("avgtemp_c")
