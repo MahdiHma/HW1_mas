@@ -4,10 +4,12 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -40,7 +42,10 @@ public class MainActivity extends AppCompatActivity {
     Button searchBtn;
     LinearLayout llResults;
     Handler mHandler;
+    ProgressBar progressBar;
     private static final int SHOW_CITIES = 100;
+    private static final int SHOW_WAITING_BAR = 101;
+    private static final int UNSHOW_WAITING__BAR =102;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,12 +55,30 @@ public class MainActivity extends AppCompatActivity {
         searchResultTv = findViewById(R.id.tv_search_result);
         searchBtn = findViewById(R.id.btn_search);
         llResults = findViewById(R.id.ll_results);
+        progressBar = findViewById(R.id.pb_results);
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String searchQuery = locationSearchBox.getText().toString();
-                URL url = NetWorkUtil.mapBoxBuildUrl(searchQuery);
-                sendSearchRequest(url);
+                final URL url = NetWorkUtil.mapBoxBuildUrl(searchQuery);
+                Thread handleRequest = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Message showMessage = new Message();
+                        showMessage.what = SHOW_WAITING_BAR;
+                        mHandler.sendMessage(showMessage);
+                        sendSearchRequest(url);
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        Message unShowMesg = new Message();
+                        unShowMesg.what = UNSHOW_WAITING__BAR;
+                        mHandler.sendMessage(unShowMesg);
+                    }
+                });
+                handleRequest.start();
             }
         });
 
@@ -97,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         mHandler = new Handler(){
+            @SuppressLint("HandlerLeak")
             @Override
             public void handleMessage(@NonNull Message msg) {
                 super.handleMessage(msg);
@@ -104,6 +128,16 @@ public class MainActivity extends AppCompatActivity {
                     case SHOW_CITIES:
                         showCities((ArrayList<City>) msg.obj);
                         break;
+                    case SHOW_WAITING_BAR:
+                        progressBar.setVisibility(View.VISIBLE);
+                        Log.i("handler", "show");
+                        break;
+                    case UNSHOW_WAITING__BAR:
+                        progressBar.setVisibility(View.INVISIBLE);
+                        Log.i("handler", "unshow");
+                        break;
+                    default:
+                        throw new IllegalStateException("Unexpected value: " + msg.what);
                 }
             }
         };
