@@ -18,7 +18,7 @@ public class WeatherRequestHandler {
     private static RequestQueue requestQueue;
     private static WeatherRequestHandler requestHandler;
 
-    public WeatherRequestHandler(Context context) {
+    private WeatherRequestHandler(Context context) {
         WeatherRequestHandler.requestHandler = this;
         WeatherRequestHandler.requestQueue = Volley.newRequestQueue(context);
     }
@@ -27,7 +27,6 @@ public class WeatherRequestHandler {
         if (WeatherRequestHandler.requestHandler == null) {
             WeatherRequestHandler.requestHandler = new WeatherRequestHandler(context);
         }
-        Log.i("salallllmmmmm", "sallllllllllllllll");
 //        url = WeatherURLBuilder.mapBoxBuildUrl(0,0).toString();
         requestQueue.add(WeatherRequestHandler.buildRequest(url));
     }
