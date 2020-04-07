@@ -2,6 +2,8 @@ package com.example.hw1_mas.requests;
 
 import android.util.Log;
 
+import com.example.hw1_mas.models.Condition;
+import com.example.hw1_mas.models.Day;
 import com.example.hw1_mas.models.Weather;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -38,6 +40,10 @@ public class WeatherRequestParser {
         Gson jsonReader = new Gson();
         JsonObject weatherObject = jsonReader.fromJson(weatherResponse.toString(), JsonObject.class);
         Weather current = jsonReader.fromJson(weatherObject.get("current"), Weather.class);
+        Day currentDay = new Day();
+        currentDay.setCondition(jsonReader.fromJson(weatherObject.get("current").getAsJsonObject().get("condition"), Condition.class));
+        current.setDay(currentDay);
+        Log.i("WeatherObject", weatherObject.toString());
         ArrayList<Weather> weathers = new ArrayList<>();
         weathers.add(current);
         JsonObject forecast = (JsonObject) weatherObject.get("forecast");
@@ -45,8 +51,6 @@ public class WeatherRequestParser {
         Log.i("test", forecastDay.toString());
         for (JsonElement day : forecastDay) {
             Weather weatherN = jsonReader.fromJson(day, Weather.class);
-            Log.i("TESsT", day.getAsJsonObject().toString());
-            Log.i("TEST", String.valueOf(weatherN.getAverageTemp()));
             weathers.add(weatherN);
 
         }

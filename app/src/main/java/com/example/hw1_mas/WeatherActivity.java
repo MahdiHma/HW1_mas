@@ -58,7 +58,7 @@ public class WeatherActivity extends AppCompatActivity {
         ArrayList<Weather> daysArray = (ArrayList<Weather>) days;
         for (Weather weather : daysArray) {
             TextView textView = new TextView(this);
-            String state = weather.getCondition().getState();
+            String state = String.valueOf(weather.getDay().getCondition().getState());
             textView.setText(state);
             linearLayout.addView(textView);
         }
@@ -75,8 +75,8 @@ public class WeatherActivity extends AppCompatActivity {
         Intent intent = getIntent();
         progressBar = (ProgressBar) findViewById(R.id.WeatherProgressBar);
         linearLayout = findViewById(R.id.linearLayout);
-        int latitude = intent.getIntExtra("latitude", 0);
-        int longitude = intent.getIntExtra("longitude", 0);
+        double latitude = intent.getIntExtra("latitude", 0);
+        double longitude = intent.getIntExtra("longitude", 0);
         WeatherRequestHandler.addWeatherRequest(latitude, longitude, this, handler);
 
     }

@@ -3,12 +3,13 @@ package com.example.hw1_mas.models;
 import com.google.gson.annotations.SerializedName;
 
 public class Condition {
-    private String text;
+    @SerializedName("text")
+    private String state;
     private String icon;
     private int code;
 
     public String getState() {
-        return text;
+        return state;
     }
 
     public String getIcon() {

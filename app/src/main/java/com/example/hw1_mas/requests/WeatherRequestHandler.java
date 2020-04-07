@@ -45,9 +45,6 @@ public class WeatherRequestHandler {
                 Message message = new Message();
                 message.what = WeatherActivity.FOUND;
                 message.obj = WeatherRequestParser.fromJson(response);
-                for (Weather i : (ArrayList<Weather>) message.obj) {
-
-                }
                 requestHandler.handler.sendMessage(message);
 
             }

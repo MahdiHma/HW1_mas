@@ -4,17 +4,17 @@ import java.util.Arrays;
 
 public class City {
     String place_name;
-    int[] center;
+    double[] center;
 
     public String getPlace_name() {
         return place_name;
     }
 
-    public int[] getCenter() {
+    public double[] getCenter() {
         return center;
     }
 
-    public City(String place_name, int[] center) {
+    public City(String place_name, double[] center) {
         this.place_name = place_name;
         this.center = center;
     }

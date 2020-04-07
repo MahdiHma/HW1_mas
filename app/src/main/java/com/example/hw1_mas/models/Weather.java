@@ -7,29 +7,18 @@ import java.util.Date;
 import com.google.gson.annotations.SerializedName;
 
 public class Weather {
-    //    private Date date = new Date();
     private String date;
-    //    @SerializedName("avgtemp_c")
-    private double averageTemp;
-    private Condition condition;
+    private Day day;
 
     public String getDate() {
         return date;
     }
 
-    public double getAverageTemp() {
-        return averageTemp;
+    public Day getDay() {
+        return day;
     }
 
-    public Condition getCondition() {
-        return condition;
-    }
-
-    public void setAverageTemp(double averageTemp) {
-        this.averageTemp = averageTemp;
-    }
-
-    public void setCondition(Condition condition) {
-        this.condition = condition;
+    public void setDay(Day day) {
+        this.day = day;
     }
 }

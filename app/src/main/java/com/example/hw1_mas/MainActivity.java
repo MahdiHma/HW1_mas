@@ -157,8 +157,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void switchPage(City city) {
         Intent intent = new Intent(this, WeatherActivity.class);
-        intent.putExtra("latitude", city.getCenter()[0]);
-        intent.putExtra("longitude", city.getCenter()[1]);
+        intent.putExtra("latitude", city.getCenter()[1]);
+        intent.putExtra("longitude", city.getCenter()[0]);
         startActivity(intent);
     }
 
