@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int UNSHOW_WAITING__BAR = 102;
     private static final int REQUEST_ERROR = 103;
     private static final int SEARCH_NOT_FOUND = 104;
-    private static final int INTERNET_NOT_CONNECTED= 105;
+    private static final int INTERNET_NOT_CONNECTED = 105;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -207,13 +207,13 @@ public class MainActivity extends AppCompatActivity {
     private boolean checkInternetConnectivity() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return  activeNetwork != null &&
+        return activeNetwork != null &&
                 activeNetwork.isConnectedOrConnecting();
     }
 
 
-    private void showInternetNotConnectedError(){
-        Toast toast = Toast.makeText(getApplicationContext(), R.string.no_internet_connection,Toast.LENGTH_LONG);
+    private void showInternetNotConnectedError() {
+        Toast toast = Toast.makeText(getApplicationContext(), R.string.no_internet_connection, Toast.LENGTH_LONG);
         toast.show();
     }
 }
