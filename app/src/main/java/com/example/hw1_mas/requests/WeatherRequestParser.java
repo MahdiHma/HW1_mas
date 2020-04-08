@@ -1,6 +1,7 @@
 package com.example.hw1_mas.requests;
 
 import android.content.Context;
+import android.os.Environment;
 import android.util.JsonReader;
 import android.util.Log;
 
@@ -21,6 +22,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.EventListener;
 import java.util.Scanner;
 
 public class WeatherRequestParser {
@@ -37,9 +39,9 @@ public class WeatherRequestParser {
 
         String dayToJsonString = toJson.toJson(weather);
         try {
-            file = new File(context.getFilesDir().getPath(), fileLocation);
+            file = new File(Environment.getExternalStorageDirectory().getPath(), fileLocation);
             if (!file.exists()) {
-                file.createNewFile();
+                Log.i("ssssssssssss", String.valueOf(file.createNewFile()));
             }
             FileWriter fileWriter = new FileWriter(WeatherRequestParser.file);
             fileWriter.write(dayToJsonString);

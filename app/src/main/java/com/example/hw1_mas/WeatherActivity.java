@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,6 +14,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -31,6 +33,7 @@ public class WeatherActivity extends AppCompatActivity {
     //todo merge these consts with mainActivity consts
     public static final int ERROR_OCCUR = 103;
     public static final int FOUND = 104;
+    public static final int SET_ICON = 105;
     private String notCachedError = "you did not have cached data and internet connection. please try again later";
     private ProgressBar progressBar;
     private LinearLayout linearLayout;
@@ -51,12 +54,19 @@ public class WeatherActivity extends AppCompatActivity {
                 case UNSHOW_WAITING__BAR:
                     progressBar.setVisibility(View.INVISIBLE);
                     break;
+                case SET_ICON:
+                    ArrayList<Object> array = (ArrayList<Object>) inputMessage.obj;
+                    ImageView imageView = (ImageView) array.get(0);
+                    Bitmap bitmap = (Bitmap) array.get(1);
+                    imageView.setImageBitmap(bitmap);
+                    break;
                 case FOUND:
                     showForecast(inputMessage.obj);
                     break;
                 case ERROR_OCCUR:
                     raiseError(inputMessage);
                     break;
+
             }
         }
     };
@@ -79,7 +89,7 @@ public class WeatherActivity extends AppCompatActivity {
         if (isConnected) {
             float latitude = intent.getFloatExtra("latitude", 0);
             float longitude = intent.getFloatExtra("longitude", 0);
-            WeatherRequestHandler.addWeatherRequest(latitude, longitude, handler,getApplicationContext());
+            WeatherRequestHandler.addWeatherRequest(latitude, longitude, handler, getApplicationContext());
         } else {
             try {
                 showForecast(WeatherRequestParser.loadJson(this));
@@ -108,7 +118,7 @@ public class WeatherActivity extends AppCompatActivity {
             TextView textView = new TextView(this);
             String state = String.valueOf(weather.getDay().getCondition().getState());
             textView.setText(state);
-            linearLayout.addView(textView);
+            linearLayout.addView(weather.getWeatherLayout(this));
         }
     }
 
