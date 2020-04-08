@@ -1,5 +1,7 @@
 package com.example.hw1_mas.requests;
 
+import android.content.Context;
+import android.util.JsonReader;
 import android.util.Log;
 
 import com.example.hw1_mas.models.Condition;
@@ -13,27 +15,52 @@ import com.google.gson.JsonObject;
 
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class WeatherRequestParser {
     private static WeatherRequestParser requestParser;
-    private static String fileLocation = "";
+    private static String fileLocation = "lastUpdate";
+    private static File file;
 
     private WeatherRequestParser() {
+
     }
 
-    public static void saveJson(ArrayList<Weather> weather) {
+    public static void saveJson(ArrayList<Weather> weather, Context context) {
         Gson toJson = new GsonBuilder().setPrettyPrinting().create();
+
         String dayToJsonString = toJson.toJson(weather);
         try {
-            FileWriter fileWriter = new FileWriter(WeatherRequestParser.fileLocation);
+            file = new File(context.getFilesDir().getPath(), fileLocation);
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            FileWriter fileWriter = new FileWriter(WeatherRequestParser.file);
             fileWriter.write(dayToJsonString);
+            fileWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+    }
+
+    public static ArrayList<Weather> loadJson(Context context) throws IOException, NullPointerException {
+        ArrayList<Weather> weathers = new ArrayList<>();
+        FileReader scanner = new FileReader(file);
+        Gson json = new GsonBuilder().setPrettyPrinting().create();
+        JsonArray weatherJson = json.fromJson(scanner, JsonArray.class);
+        for (JsonElement day : weatherJson) {
+            Weather weatherN = json.fromJson(day, Weather.class);
+            weathers.add(weatherN);
+        }
+        scanner.close();
+        return weathers;
     }
 
     public static ArrayList<Weather> fromJson(JSONObject weatherResponse) {

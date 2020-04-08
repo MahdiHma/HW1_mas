@@ -19,7 +19,9 @@ import android.widget.TextView;
 
 import com.example.hw1_mas.models.Weather;
 import com.example.hw1_mas.requests.WeatherRequestHandler;
+import com.example.hw1_mas.requests.WeatherRequestParser;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import static com.example.hw1_mas.MainActivity.SHOW_WAITING_BAR;
@@ -29,6 +31,7 @@ public class WeatherActivity extends AppCompatActivity {
     //todo merge these consts with mainActivity consts
     public static final int ERROR_OCCUR = 103;
     public static final int FOUND = 104;
+    private String notCachedError = "you did not have cached data and internet connection. please try again later";
     private ProgressBar progressBar;
     private LinearLayout linearLayout;
 
@@ -58,6 +61,37 @@ public class WeatherActivity extends AppCompatActivity {
         }
     };
 
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_weather);
+        progressBar = (ProgressBar) findViewById(R.id.WeatherProgressBar);
+        progressBar.setVisibility(View.VISIBLE);
+        linearLayout = findViewById(R.id.linearLayout);
+        getWeather();
+    }
+
+    public void getWeather() {
+        Intent intent = getIntent();
+
+        boolean isConnected = intent.getBooleanExtra("connected", false);
+        if (isConnected) {
+            float latitude = intent.getFloatExtra("latitude", 0);
+            float longitude = intent.getFloatExtra("longitude", 0);
+            WeatherRequestHandler.addWeatherRequest(latitude, longitude, handler,getApplicationContext());
+        } else {
+            try {
+                showForecast(WeatherRequestParser.loadJson(this));
+            } catch (Exception e) {
+                Message message = new Message();
+                message.obj = notCachedError;
+                raiseError(message);
+            }
+        }
+    }
+
+
     private void raiseError(Message inputMessage) {
         TextView textView = new TextView(this);
         String error = (String) inputMessage.obj;
@@ -78,20 +112,6 @@ public class WeatherActivity extends AppCompatActivity {
         }
     }
 
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_weather);
-        Intent intent = getIntent();
-        progressBar = (ProgressBar) findViewById(R.id.WeatherProgressBar);
-        progressBar.setVisibility(View.VISIBLE);
-        linearLayout = findViewById(R.id.linearLayout);
-        float latitude = intent.getFloatExtra("latitude", 0);
-        float longitude = intent.getFloatExtra("longitude", 0);
-        WeatherRequestHandler.addWeatherRequest(latitude, longitude, handler);
-
-    }
 
     @Override
     public void onBackPressed() {

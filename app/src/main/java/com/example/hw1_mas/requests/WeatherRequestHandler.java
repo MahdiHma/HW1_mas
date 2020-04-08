@@ -37,13 +37,13 @@ public class WeatherRequestHandler {
         WeatherRequestHandler.requestQueue = MainActivity.requestQueue;
     }
 
-    public static void addWeatherRequest(double latitude, double longitude,Handler handler) {
+    public static void addWeatherRequest(double latitude, double longitude,Handler handler,Context context) {
         WeatherRequestHandler.requestHandler = new WeatherRequestHandler(handler);
         String url = NetWorkUtil.weatherBuileUrl(latitude, longitude).toString();
-        requestQueue.add(WeatherRequestHandler.buildRequest(url));
+        requestQueue.add(WeatherRequestHandler.buildRequest(url,context));
     }
 
-    private static JsonObjectRequest buildRequest(String url) {
+    private static JsonObjectRequest buildRequest(String url, final Context context) {
         final JSONObject weatherJson = new JSONObject();
         return new JsonObjectRequest(Request.Method.GET, url, weatherJson, new Response.Listener<JSONObject>() {
             @Override
@@ -56,6 +56,8 @@ public class WeatherRequestHandler {
                 message.what = WeatherActivity.FOUND;
                 message.obj = WeatherRequestParser.fromJson(response);
                 ArrayList<Weather> r = WeatherRequestParser.fromJson(response);
+                WeatherRequestParser.saveJson(r, context);
+
                 requestHandler.handler.sendMessage(message);
             }
         }, new Response.ErrorListener() {
