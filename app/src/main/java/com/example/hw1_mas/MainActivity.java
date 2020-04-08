@@ -26,6 +26,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.hw1_mas.models.City;
+import com.example.hw1_mas.requests.MapBoxRequestHandler;
 import com.example.hw1_mas.requests.WeatherRequestHandler;
 import com.example.hw1_mas.utilities.NetWorkUtil;
 import com.google.gson.Gson;
@@ -39,18 +40,48 @@ import java.net.URL;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
+
+    public static final int SHOW_CITIES = 100;
+    public static final int SHOW_WAITING_BAR = 101;
+    public static final int UNSHOW_WAITING__BAR = 102;
+    public static final int REQUEST_ERROR = 103;
+    public static final int SEARCH_NOT_FOUND = 104;
+    public static final int INTERNET_NOT_CONNECTED = 105;
+
+
+    ProgressBar progressBar;
     EditText locationSearchBox;
     TextView searchErrorTv;
     Button searchBtn;
     LinearLayout llResults;
-    Handler mHandler;
-    ProgressBar progressBar;
-    private static final int SHOW_CITIES = 100;
-    private static final int SHOW_WAITING_BAR = 101;
-    private static final int UNSHOW_WAITING__BAR = 102;
-    private static final int REQUEST_ERROR = 103;
-    private static final int SEARCH_NOT_FOUND = 104;
-    private static final int INTERNET_NOT_CONNECTED = 105;
+
+    @SuppressLint("HandlerLeak")
+    Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case SHOW_CITIES:
+                    showCities((ArrayList<City>) msg.obj);
+                    break;
+                case SHOW_WAITING_BAR:
+                    progressBar.setVisibility(View.VISIBLE);
+                    break;
+                case UNSHOW_WAITING__BAR:
+                    progressBar.setVisibility(View.INVISIBLE);
+                    break;
+                case SEARCH_NOT_FOUND:
+                    searchErrorTv.setText(R.string.city_not_found);
+                    break;
+                case REQUEST_ERROR:
+                    searchErrorTv.setText(R.string.error_in_request);
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + msg.what);
+            }
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,117 +99,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String searchQuery = locationSearchBox.getText().toString();
-                final URL url = NetWorkUtil.mapBoxBuildUrl(searchQuery);
                 searchErrorTv.setText("");
-                Thread handleRequest = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Message showMessage = new Message();
-                        showMessage.what = SHOW_WAITING_BAR;
-                        mHandler.sendMessage(showMessage);
-                        try {
-                            Thread.sleep(500);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        sendSearchRequest(url);
-                    }
-                });
-                handleRequest.start();
+                progressBar.setVisibility(View.VISIBLE);
+                MapBoxRequestHandler.handleNewRequest(getApplicationContext(), mHandler,searchQuery);
             }
         });
 
 
     }
 
-    private void sendSearchRequest(URL url) {
-//        boolean isOnline = checkInternetConnectivity();
-//        if (!isOnline){
-//            Message unShowMesg = new Message();
-//            unShowMesg.what = UNSHOW_WAITING__BAR;
-//            mHandler.sendMessage(unShowMesg);
-//            Message message = new Message() ;
-//            message.what = INTERNET_NOT_CONNECTED;
-//            mHandler.sendMessage(message);
-//            return;
-//        }
-        RequestQueue queue = Volley.newRequestQueue(this);
-        final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, url.toString(), null, new Response.Listener<JSONObject>() {
-
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        JsonArray features;
-                        Gson gson = new Gson();
-                        JsonObject gResponse = gson.fromJson(response.toString(), JsonObject.class);
-                        features = (JsonArray) gResponse.get("features");
-                        if (features.size() == 0) {
-                            Message message = new Message();
-                            message.what = SEARCH_NOT_FOUND;
-                            mHandler.sendMessage(message);
-                        }
-                        ArrayList<City> resultCities = new ArrayList<>();
-                        for (JsonElement feature : features) {
-                            resultCities.add(gson.fromJson(feature, City.class));
-                        }
-                        Message message = new Message();
-                        message.what = SHOW_CITIES;
-                        message.obj = resultCities;
-                        mHandler.sendMessage(message);
-                        Message unShowMesg = new Message();
-                        unShowMesg.what = UNSHOW_WAITING__BAR;
-                        mHandler.sendMessage(unShowMesg);
-                    }
-                }, new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Message unShowMesg = new Message();
-                        unShowMesg.what = UNSHOW_WAITING__BAR;
-                        mHandler.sendMessage(unShowMesg);
-                        Message message = new Message();
-                        message.what = REQUEST_ERROR;
-                        mHandler.sendMessage(message);
-
-                    }
-                });
-        queue.add(jsonObjectRequest);
-    }
-
-
-    @SuppressLint("HandlerLeak")
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mHandler = new Handler() {
-            @Override
-            public void handleMessage(@NonNull Message msg) {
-                super.handleMessage(msg);
-                switch (msg.what) {
-                    case SHOW_CITIES:
-                        showCities((ArrayList<City>) msg.obj);
-                        break;
-                    case SHOW_WAITING_BAR:
-                        progressBar.setVisibility(View.VISIBLE);
-                        break;
-                    case UNSHOW_WAITING__BAR:
-                        progressBar.setVisibility(View.INVISIBLE);
-                        break;
-                    case SEARCH_NOT_FOUND:
-                        searchErrorTv.setText(R.string.city_not_found);
-                        break;
-                    case REQUEST_ERROR:
-                        searchErrorTv.setText(R.string.error_in_request);
-                        break;
-//                    case INTERNET_NOT_CONNECTED:
-//                        showInternetNotConnectedError();
-//                        break;
-                    default:
-                        throw new IllegalStateException("Unexpected value: " + msg.what);
-                }
-            }
-        };
-    }
 
     private void switchPage(City city) {
         Intent intent = new Intent(this, WeatherActivity.class);

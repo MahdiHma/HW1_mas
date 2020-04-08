@@ -22,10 +22,11 @@ import com.example.hw1_mas.requests.WeatherRequestHandler;
 
 import java.util.ArrayList;
 
+import static com.example.hw1_mas.MainActivity.SHOW_WAITING_BAR;
+import static com.example.hw1_mas.MainActivity.UNSHOW_WAITING__BAR;
+
 public class WeatherActivity extends AppCompatActivity {
-    public static final int SHOW_CITIES = 100;
-    public static final int SHOW_WAITING_BAR = 101;
-    public static final int UNSHOW_WAITING__BAR = 102;
+    //todo merge these consts with mainActivity consts
     public static final int ERROR_OCCUR = 103;
     public static final int FOUND = 104;
     private ProgressBar progressBar;
@@ -82,11 +83,9 @@ public class WeatherActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
-        Message message = new Message();
-        message.what = SHOW_WAITING_BAR;
-        handler.sendMessage(message);
         Intent intent = getIntent();
         progressBar = (ProgressBar) findViewById(R.id.WeatherProgressBar);
+        progressBar.setVisibility(View.VISIBLE);
         linearLayout = findViewById(R.id.linearLayout);
         float latitude = intent.getFloatExtra("latitude", 0);
         float longitude = intent.getFloatExtra("longitude", 0);
