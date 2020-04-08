@@ -31,14 +31,14 @@ public class WeatherRequestHandler {
     private static String noApiError = "cannot find the place";
     private Handler handler;
 
-    private WeatherRequestHandler(Context context, Handler handler) {
+    private WeatherRequestHandler(Handler handler) {
         this.handler = handler;
         WeatherRequestHandler.requestHandler = this;
         WeatherRequestHandler.requestQueue = MainActivity.requestQueue;
     }
 
-    public static void addWeatherRequest(double latitude, double longitude, Context context, Handler handler) {
-        WeatherRequestHandler.requestHandler = new WeatherRequestHandler(context, handler);
+    public static void addWeatherRequest(double latitude, double longitude,Handler handler) {
+        WeatherRequestHandler.requestHandler = new WeatherRequestHandler(handler);
         String url = NetWorkUtil.weatherBuileUrl(latitude, longitude).toString();
         requestQueue.add(WeatherRequestHandler.buildRequest(url));
     }

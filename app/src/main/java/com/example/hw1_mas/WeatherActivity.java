@@ -89,7 +89,7 @@ public class WeatherActivity extends AppCompatActivity {
         linearLayout = findViewById(R.id.linearLayout);
         float latitude = intent.getFloatExtra("latitude", 0);
         float longitude = intent.getFloatExtra("longitude", 0);
-        WeatherRequestHandler.addWeatherRequest(latitude, longitude, this, handler);
+        WeatherRequestHandler.addWeatherRequest(latitude, longitude, handler);
 
     }
 

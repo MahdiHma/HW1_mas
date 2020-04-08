@@ -7,6 +7,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
@@ -57,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     LinearLayout llResults;
 
     @SuppressLint("HandlerLeak")
-    Handler mHandler = new Handler() {
+    Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
@@ -99,7 +100,6 @@ public class MainActivity extends AppCompatActivity {
         if (!checkInternetConnectivity()) {
             showInternetNotConnectedError();
         }
-        Log.v("Main On Create","test");
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

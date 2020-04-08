@@ -3,6 +3,7 @@ package com.example.hw1_mas.requests;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -10,6 +11,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.hw1_mas.MainActivity;
 import com.example.hw1_mas.models.City;
 import com.example.hw1_mas.utilities.NetWorkUtil;
 import com.google.gson.Gson;
@@ -34,31 +36,26 @@ public class MapBoxRequestHandler {
 
 
 
-    private MapBoxRequestHandler(RequestQueue requestQueue, Handler handler) {
+    private MapBoxRequestHandler( Handler handler) {
         this.mHandler = handler;
-        this.requestQueue = requestQueue;
+        this.requestQueue = MainActivity.requestQueue;
     }
 
-    public static MapBoxRequestHandler getInstance(RequestQueue requestQueue, Handler handler) {
-        if (instance == null) {
-            instance = new MapBoxRequestHandler(requestQueue, handler);
-        }
-        return instance;
-    }
 
     public static void handleNewRequest(RequestQueue requestQueue,Handler handler,String  placeQuery) {
-        final URL url = NetWorkUtil.mapBoxBuildUrl(placeQuery);
-        MapBoxRequestHandler.getInstance(requestQueue,handler).sendSearchRequest(url);
+        URL url = NetWorkUtil.mapBoxBuildUrl(placeQuery);
+        new MapBoxRequestHandler(handler).sendSearchRequest(url);
     }
 
 
     private void sendSearchRequest(URL url) {
 
-        final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, url.toString(), null, new Response.Listener<JSONObject>() {
 
                     @Override
                     public void onResponse(JSONObject response) {
+                        Log.i("On Response", response.toString());
                         ArrayList<City> resultCities = parseJsonResponse(response);
                         if (resultCities.size() == 0) {
                             Message message = new Message();
@@ -86,6 +83,7 @@ public class MapBoxRequestHandler {
 
                     }
                 });
+        Log.i("MapBox","rquest created");
         requestQueue.add(jsonObjectRequest);
     }
 
