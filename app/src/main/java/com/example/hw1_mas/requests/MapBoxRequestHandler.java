@@ -34,21 +34,21 @@ public class MapBoxRequestHandler {
 
 
 
-    private MapBoxRequestHandler(Context context, Handler handler) {
+    private MapBoxRequestHandler(RequestQueue requestQueue, Handler handler) {
         this.mHandler = handler;
-        this.requestQueue = Volley.newRequestQueue(context);
+        this.requestQueue = requestQueue;
     }
 
-    public static MapBoxRequestHandler getInstance(Context context, Handler handler) {
+    public static MapBoxRequestHandler getInstance(RequestQueue requestQueue, Handler handler) {
         if (instance == null) {
-            instance = new MapBoxRequestHandler(context, handler);
+            instance = new MapBoxRequestHandler(requestQueue, handler);
         }
         return instance;
     }
 
-    public static void handleNewRequest(Context context,Handler handler,String  placeQuery) {
+    public static void handleNewRequest(RequestQueue requestQueue,Handler handler,String  placeQuery) {
         final URL url = NetWorkUtil.mapBoxBuildUrl(placeQuery);
-        MapBoxRequestHandler.getInstance(context,handler).sendSearchRequest(url);
+        MapBoxRequestHandler.getInstance(requestQueue,handler).sendSearchRequest(url);
     }
 
 

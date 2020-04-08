@@ -8,6 +8,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -47,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     public static final int REQUEST_ERROR = 103;
     public static final int SEARCH_NOT_FOUND = 104;
     public static final int INTERNET_NOT_CONNECTED = 105;
-
+    public static RequestQueue requestQueue;
 
     ProgressBar progressBar;
     EditText locationSearchBox;
@@ -87,6 +88,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if (requestQueue == null){
+            requestQueue = Volley.newRequestQueue(MainActivity.this);
+        }
         locationSearchBox = findViewById(R.id.et_location_search);
         searchErrorTv = findViewById(R.id.tv_search_error);
         searchBtn = findViewById(R.id.btn_search);
@@ -95,13 +99,14 @@ public class MainActivity extends AppCompatActivity {
         if (!checkInternetConnectivity()) {
             showInternetNotConnectedError();
         }
+        Log.v("Main On Create","test");
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String searchQuery = locationSearchBox.getText().toString();
                 searchErrorTv.setText("");
                 progressBar.setVisibility(View.VISIBLE);
-                MapBoxRequestHandler.handleNewRequest(getApplicationContext(), mHandler,searchQuery);
+                MapBoxRequestHandler.handleNewRequest(requestQueue, mHandler,searchQuery);
             }
         });
 

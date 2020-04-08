@@ -11,6 +11,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.hw1_mas.MainActivity;
 import com.example.hw1_mas.WeatherActivity;
 import com.example.hw1_mas.models.Day;
 import com.example.hw1_mas.models.Weather;
@@ -33,7 +34,7 @@ public class WeatherRequestHandler {
     private WeatherRequestHandler(Context context, Handler handler) {
         this.handler = handler;
         WeatherRequestHandler.requestHandler = this;
-        WeatherRequestHandler.requestQueue = Volley.newRequestQueue(context);
+        WeatherRequestHandler.requestQueue = MainActivity.requestQueue;
     }
 
     public static void addWeatherRequest(double latitude, double longitude, Context context, Handler handler) {
