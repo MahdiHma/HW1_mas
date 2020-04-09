@@ -87,13 +87,17 @@ public class Weather {
     public LinearLayout getWeatherLayout(Context context) {
         float locationFontSize = 16f;
         float temperatureFontSize = 12f;
+        float stateFontSize = 15f;
         LinearLayout linearLayout = new LinearLayout(context);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
-        linearLayout.setPadding(0, 20, 0, 20);
-        linearLayout.setDividerPadding(20);
-        linearLayout.addView(getTextView(context, day.getAverageTemp(), temperatureFontSize));
-        linearLayout.addView(getTextView(context, date, locationFontSize));
-        linearLayout.addView(getIconView(context));
+        linearLayout.setPadding(0, 30, 0, 30);
+        linearLayout.addView(getTextView(context, date, locationFontSize, Color.rgb(0, 100, 240)));
+        LinearLayout weatherIconAndStatus = new LinearLayout(context);
+        weatherIconAndStatus.addView(getIconView(context));
+        weatherIconAndStatus.addView(getTextView(context, day.getAverageTemp(), temperatureFontSize, Color.rgb(20, 20, 150)));
+        weatherIconAndStatus.setGravity(Gravity.CENTER);
+        linearLayout.addView(weatherIconAndStatus);
+        linearLayout.addView(getTextView(context, getDay().getCondition().getState(), stateFontSize, Color.rgb(0, 200, 50)));
         return linearLayout;
     }
 
@@ -102,15 +106,17 @@ public class Weather {
         this.getDay().getCondition().getIconView(context, iconImageView);
         iconImageView.setScaleX(1.8f);
         iconImageView.setScaleY(1.8f);
+        iconImageView.setPadding(0, 10, 20, 10);
         return iconImageView;
     }
 
-    private TextView getTextView(Context context, String text, float fontSize) {
+    private TextView getTextView(Context context, String text, float fontSize, int color) {
         TextView textView = new TextView(context);
         textView.setText(text);
-        textView.setTextColor(Color.DKGRAY);
+        textView.setTextColor(color);
         textView.setTextSize(fontSize);
         textView.setGravity(Gravity.CENTER);
+        textView.setPadding(0, 2, 0, 2);
         return textView;
     }
 

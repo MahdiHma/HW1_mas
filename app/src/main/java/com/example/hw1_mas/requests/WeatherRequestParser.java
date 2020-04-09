@@ -97,6 +97,7 @@ public class WeatherRequestParser {
         Day currentDay = new Day();
         currentDay.setCondition(jsonReader.fromJson(weatherObject.get("current").getAsJsonObject().get("condition"), Condition.class));
         current.setDay(currentDay);
+        currentDay.setAverageTemp(jsonReader.fromJson(weatherObject.get("current").getAsJsonObject().get("temp_c"), Double.class));
         current.setDate();
         Log.i("WeatherObject", weatherObject.toString());
         ArrayList<Weather> weathers = new ArrayList<>();

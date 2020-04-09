@@ -12,6 +12,10 @@ public class Day {
         return String.valueOf(averageTemp) + temp;
     }
 
+    public void setAverageTemp(double averageTemp) {
+        this.averageTemp = averageTemp;
+    }
+
     public Condition getCondition() {
         return condition;
     }
