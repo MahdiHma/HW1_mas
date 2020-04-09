@@ -3,8 +3,11 @@ package com.example.hw1_mas.models;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Message;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -23,6 +26,7 @@ import java.util.Scanner;
 import com.android.volley.Response;
 import com.android.volley.toolbox.ImageRequest;
 import com.example.hw1_mas.MainActivity;
+import com.example.hw1_mas.R;
 import com.example.hw1_mas.WeatherActivity;
 import com.google.gson.annotations.SerializedName;
 
@@ -51,11 +55,13 @@ public class Weather {
         this.day = day;
     }
 
-    public LinearLayout getWeatherLayout(Context context) {
+    public LinearLayout getWeatherLayout(Context context, ViewGroup parent) {
         LinearLayout linearLayout = new LinearLayout(context);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
         float locationFontSize = 16f;
         linearLayout.setPadding(10, 10, 10, 10);
         linearLayout.setDividerPadding(10);
+
         linearLayout.addView(getTextView(context, date != null ? date : "", locationFontSize));
         linearLayout.addView(getIconView(context));
         float temperatureFontSize = 10f;
@@ -66,8 +72,8 @@ public class Weather {
     private ImageView getIconView(Context context) {
         ImageView iconImageView = new ImageView(context);
         this.getDay().getCondition().getIconView(context, iconImageView);
-        iconImageView.setScaleX(5);
-        iconImageView.setScaleY(5);
+        iconImageView.setScaleX(1.5f);
+        iconImageView.setScaleY(1.5f);
         return iconImageView;
     }
 
