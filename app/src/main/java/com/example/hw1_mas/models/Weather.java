@@ -1,12 +1,12 @@
 package com.example.hw1_mas.models;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Color;
 import android.view.Gravity;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.example.hw1_mas.R;
 
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
@@ -34,7 +34,6 @@ public class Weather {
         return day;
     }
 
-    @SuppressLint("SimpleDateFormat")
     public void setDate() {
         String pattern = "EEE, MMM d HH:mm";
         if (date != null) {
@@ -67,19 +66,19 @@ public class Weather {
         float locationFontSize = 16f;
         float temperatureFontSize = 12f;
         float stateFontSize = 15f;
-        int dayColor = Color.rgb(0, 100, 240);
-        int tempColor = Color.rgb(20, 20, 150);
-        int stateColor = Color.rgb(0, 200, 50);
         LinearLayout linearLayout = new LinearLayout(context);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setPadding(0, 30, 0, 30);
-        linearLayout.addView(getTextView(context, date, locationFontSize, dayColor));
+        linearLayout.addView(getTextView(context, date, locationFontSize
+                , context.getResources().getColor(R.color.dayFontColor)));
         LinearLayout weatherIconAndStatus = new LinearLayout(context);
         weatherIconAndStatus.addView(getIconView(context));
-        weatherIconAndStatus.addView(getTextView(context, day.getAverageTemp(), temperatureFontSize, tempColor));
+        weatherIconAndStatus.addView(getTextView(context, day.getAverageTemp(), temperatureFontSize,
+                context.getResources().getColor(R.color.tempFontColor)));
         weatherIconAndStatus.setGravity(Gravity.CENTER);
         linearLayout.addView(weatherIconAndStatus);
-        linearLayout.addView(getTextView(context, getDay().getCondition().getState(), stateFontSize, stateColor));
+        linearLayout.addView(getTextView(context, getDay().getCondition().getState(), stateFontSize
+                , context.getResources().getColor(R.color.stateFontColor)));
         return linearLayout;
     }
 
