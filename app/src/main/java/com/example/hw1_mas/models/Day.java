@@ -7,8 +7,9 @@ public class Day {
     private double averageTemp;
     private Condition condition;
 
-    public double getAverageTemp() {
-        return averageTemp;
+    public String getAverageTemp() {
+        char temp = '°';
+        return String.valueOf(averageTemp) + temp;
     }
 
     public Condition getCondition() {

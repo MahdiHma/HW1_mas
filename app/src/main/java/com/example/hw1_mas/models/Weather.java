@@ -20,6 +20,7 @@ import android.widget.TextView;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import java.nio.charset.Charset;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -84,23 +85,23 @@ public class Weather {
 
 
     public LinearLayout getWeatherLayout(Context context) {
+        float locationFontSize = 16f;
+        float temperatureFontSize = 12f;
         LinearLayout linearLayout = new LinearLayout(context);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
-        float locationFontSize = 16f;
-        linearLayout.setPadding(10, 10, 10, 10);
-        linearLayout.setDividerPadding(10);
-        linearLayout.addView(getTextView(context, date != null ? date : "", locationFontSize));
+        linearLayout.setPadding(0, 20, 0, 20);
+        linearLayout.setDividerPadding(20);
+        linearLayout.addView(getTextView(context, day.getAverageTemp(), temperatureFontSize));
+        linearLayout.addView(getTextView(context, date, locationFontSize));
         linearLayout.addView(getIconView(context));
-        float temperatureFontSize = 10f;
-        linearLayout.addView(getTextView(context, String.valueOf(day.getAverageTemp()), temperatureFontSize));
         return linearLayout;
     }
 
     private ImageView getIconView(Context context) {
         ImageView iconImageView = new ImageView(context);
         this.getDay().getCondition().getIconView(context, iconImageView);
-        iconImageView.setScaleX(1.5f);
-        iconImageView.setScaleY(1.5f);
+        iconImageView.setScaleX(1.8f);
+        iconImageView.setScaleY(1.8f);
         return iconImageView;
     }
 
