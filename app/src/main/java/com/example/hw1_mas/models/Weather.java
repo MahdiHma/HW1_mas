@@ -88,16 +88,19 @@ public class Weather {
         float locationFontSize = 16f;
         float temperatureFontSize = 12f;
         float stateFontSize = 15f;
+        int dayColor = Color.rgb(0, 100, 240);
+        int tempColor = Color.rgb(20, 20, 150);
+        int stateColor = Color.rgb(0, 200, 50);
         LinearLayout linearLayout = new LinearLayout(context);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setPadding(0, 30, 0, 30);
-        linearLayout.addView(getTextView(context, date, locationFontSize, Color.rgb(0, 100, 240)));
+        linearLayout.addView(getTextView(context, date, locationFontSize, dayColor));
         LinearLayout weatherIconAndStatus = new LinearLayout(context);
         weatherIconAndStatus.addView(getIconView(context));
-        weatherIconAndStatus.addView(getTextView(context, day.getAverageTemp(), temperatureFontSize, Color.rgb(20, 20, 150)));
+        weatherIconAndStatus.addView(getTextView(context, day.getAverageTemp(), temperatureFontSize, tempColor));
         weatherIconAndStatus.setGravity(Gravity.CENTER);
         linearLayout.addView(weatherIconAndStatus);
-        linearLayout.addView(getTextView(context, getDay().getCondition().getState(), stateFontSize, Color.rgb(0, 200, 50)));
+        linearLayout.addView(getTextView(context, getDay().getCondition().getState(), stateFontSize, stateColor));
         return linearLayout;
     }
 
