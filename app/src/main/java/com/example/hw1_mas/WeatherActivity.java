@@ -96,8 +96,7 @@ public class WeatherActivity extends AppCompatActivity {
                 unShowMessage.what = UNSHOW_WAITING__BAR;
                 handler.sendMessage(unShowMessage);
                 message.what = ERROR_OCCUR;
-                String notCachedError = "you did not have cached data and internet connection. please try again later";
-                message.obj = notCachedError;
+                message.obj = getString(R.string.no_cash_data);
                 handler.sendMessage(message);
             }
         }

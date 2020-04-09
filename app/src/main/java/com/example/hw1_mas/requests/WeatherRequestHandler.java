@@ -10,6 +10,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.hw1_mas.MainActivity;
+import com.example.hw1_mas.R;
 import com.example.hw1_mas.WeatherActivity;
 import com.example.hw1_mas.models.Weather;
 import com.example.hw1_mas.utilities.NetWorkUtil;
@@ -25,7 +26,6 @@ public class WeatherRequestHandler {
     private static RequestQueue requestQueue;
     private static WeatherRequestHandler requestHandler;
     //todo: move string to res
-    private static String noApiError = "cannot find the place";
     private Handler handler;
 
     private WeatherRequestHandler(Handler handler) {
@@ -70,7 +70,7 @@ public class WeatherRequestHandler {
                 requestHandler.handler.sendMessage(message);
                 message = new Message();
                 message.what = WeatherActivity.ERROR_OCCUR;
-                message.obj = WeatherRequestHandler.noApiError;
+                message.obj = context.getString(R.string.city_not_found);
                 requestHandler.handler.sendMessage(message);
 
             }

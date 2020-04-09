@@ -79,8 +79,6 @@ public class MainActivity extends AppCompatActivity {
                 case REQUEST_ERROR:
                     searchErrorTv.setText(R.string.error_in_request);
                     break;
-                default:
-                    throw new IllegalStateException("Unexpected value: " + msg.what);
             }
         }
     };
