@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -18,6 +19,7 @@ import com.example.hw1_mas.WeatherActivity;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.InputStream;
+import java.net.URL;
 
 public class Condition {
     @SerializedName("text")
@@ -51,7 +53,7 @@ public class Condition {
             String urldisplay = urls[0];
             Bitmap mIcon11 = null;
             try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
+                InputStream in = new URL(urldisplay).openStream();
                 mIcon11 = BitmapFactory.decodeStream(in);
             } catch (Exception e) {
                 Log.e("Error", e.getMessage());
