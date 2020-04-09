@@ -1,5 +1,6 @@
 package com.example.hw1_mas.models;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.Gravity;
 import android.widget.ImageView;
@@ -34,6 +35,7 @@ public class Weather {
         return day;
     }
 
+    @SuppressLint("SimpleDateFormat")
     public void setDate() {
         String pattern = "EEE, MMM d HH:mm";
         if (date != null) {
