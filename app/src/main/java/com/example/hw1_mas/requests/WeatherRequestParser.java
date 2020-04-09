@@ -16,11 +16,16 @@ import com.google.gson.JsonObject;
 
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.Scanner;
@@ -39,12 +44,11 @@ public class WeatherRequestParser {
 
         String dayToJsonString = toJson.toJson(weather);
         try {
-            file = new File(Environment.getExternalStorageDirectory().getPath(), fileLocation);
-            if (!file.exists()) {
-                Log.i("ssssssssssss", String.valueOf(file.createNewFile()));
-            }
-            FileWriter fileWriter = new FileWriter(WeatherRequestParser.file);
-            fileWriter.write(dayToJsonString);
+            file = getFile(context);
+
+            Log.i("ssssssssssss", "ssstttttttttttttttt");
+            FileOutputStream fileWriter = context.openFileOutput(fileLocation, Context.MODE_PRIVATE);
+            fileWriter.write(dayToJsonString.getBytes());
             fileWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -52,9 +56,30 @@ public class WeatherRequestParser {
 
     }
 
-    public static ArrayList<Weather> loadJson(Context context) throws IOException, NullPointerException {
+    public static ArrayList<Weather> loadJson(Context context) throws IOException {
         ArrayList<Weather> weathers = new ArrayList<>();
-        FileReader scanner = new FileReader(file);
+        FileInputStream fis = context.openFileInput(fileLocation);
+        InputStreamReader
+                inputStreamReader = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT
+                ? new InputStreamReader(fis, StandardCharsets.UTF_8)
+                : new InputStreamReader(fis, Charset.forName("UTF-8"));
+        String contents;
+        StringBuilder stringBuilder = new StringBuilder();
+        try {
+            BufferedReader reader = new BufferedReader(inputStreamReader);
+            String line = reader.readLine();
+            while (line != null) {
+                stringBuilder.append(line).append('\n');
+                line = reader.readLine();
+            }
+        } catch (IOException e) {
+            // Error occurred when opening raw file for reading.
+        } finally {
+            contents = stringBuilder.toString();
+            Log.i("woooooooooooww", contents);
+        }
+
+        FileReader scanner = new FileReader(getFile(context));
         Gson json = new GsonBuilder().setPrettyPrinting().create();
         JsonArray weatherJson = json.fromJson(scanner, JsonArray.class);
         for (JsonElement day : weatherJson) {
@@ -84,5 +109,12 @@ public class WeatherRequestParser {
         Log.i("test", weathers.toString());
         return weathers;
 
+    }
+
+    private static File getFile(Context context) {
+        if (file == null || !file.exists()) {
+            file = new File(context.getFilesDir(), fileLocation);
+        }
+        return file;
     }
 }

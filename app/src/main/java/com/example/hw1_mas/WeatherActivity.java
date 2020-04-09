@@ -17,6 +17,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.hw1_mas.models.Weather;
@@ -32,10 +34,13 @@ import static com.example.hw1_mas.MainActivity.UNSHOW_WAITING__BAR;
 public class WeatherActivity extends AppCompatActivity {
     //todo merge these consts with mainActivity consts
     public static final int ERROR_OCCUR = 103;
+    public static final int NOT_CACHED = 107;
     public static final int FOUND = 104;
+
     public static final int SET_ICON = 105;
     private String notCachedError = "you did not have cached data and internet connection. please try again later";
     private ProgressBar progressBar;
+    private ScrollView scrollView;
     private LinearLayout linearLayout;
 
     public Handler getHandler() {
@@ -54,15 +59,12 @@ public class WeatherActivity extends AppCompatActivity {
                 case UNSHOW_WAITING__BAR:
                     progressBar.setVisibility(View.INVISIBLE);
                     break;
-                case SET_ICON:
-                    ArrayList<Object> array = (ArrayList<Object>) inputMessage.obj;
-                    ImageView imageView = (ImageView) array.get(0);
-                    Bitmap bitmap = (Bitmap) array.get(1);
-                    imageView.setImageBitmap(bitmap);
-                    break;
                 case FOUND:
                     showForecast(inputMessage.obj);
                     break;
+//                case NOT_CACHED:
+//                    raiseError(inputMessage);
+//                    break;
                 case ERROR_OCCUR:
                     raiseError(inputMessage);
                     break;
@@ -78,7 +80,8 @@ public class WeatherActivity extends AppCompatActivity {
         setContentView(R.layout.activity_weather);
         progressBar = (ProgressBar) findViewById(R.id.WeatherProgressBar);
         progressBar.setVisibility(View.VISIBLE);
-        linearLayout = findViewById(R.id.linearLayout);
+        scrollView = findViewById(R.id.scrollView2);
+        linearLayout = findViewById(R.id.linear_layout);
         getWeather();
     }
 
@@ -92,11 +95,18 @@ public class WeatherActivity extends AppCompatActivity {
             WeatherRequestHandler.addWeatherRequest(latitude, longitude, handler, getApplicationContext());
         } else {
             try {
-                showForecast(WeatherRequestParser.loadJson(this));
+                Message message = new Message();
+                message.what = FOUND;
+                message.obj = WeatherRequestParser.loadJson(this);
+                handler.sendMessage(message);
+//                showForecast(WeatherRequestParser.loadJson(this));
             } catch (Exception e) {
                 Message message = new Message();
+                e.printStackTrace();
+//                Log.i("woooooww", );
+                message.what = ERROR_OCCUR;
                 message.obj = notCachedError;
-                raiseError(message);
+                handler.sendMessage(message);
             }
         }
     }

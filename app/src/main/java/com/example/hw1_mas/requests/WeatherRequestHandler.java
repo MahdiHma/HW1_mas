@@ -18,10 +18,13 @@ import com.example.hw1_mas.models.Weather;
 import com.example.hw1_mas.utilities.NetWorkUtil;
 
 import org.json.JSONObject;
+
 import static com.example.hw1_mas.MainActivity.REQUEST_ERROR;
 import static com.example.hw1_mas.MainActivity.SEARCH_NOT_FOUND;
 import static com.example.hw1_mas.MainActivity.SHOW_CITIES;
 import static com.example.hw1_mas.MainActivity.UNSHOW_WAITING__BAR;
+
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class WeatherRequestHandler {
@@ -37,10 +40,10 @@ public class WeatherRequestHandler {
         WeatherRequestHandler.requestQueue = MainActivity.requestQueue;
     }
 
-    public static void addWeatherRequest(double latitude, double longitude,Handler handler,Context context) {
+    public static void addWeatherRequest(double latitude, double longitude, Handler handler, Context context) {
         WeatherRequestHandler.requestHandler = new WeatherRequestHandler(handler);
         String url = NetWorkUtil.weatherBuileUrl(latitude, longitude).toString();
-        requestQueue.add(WeatherRequestHandler.buildRequest(url,context));
+        requestQueue.add(WeatherRequestHandler.buildRequest(url, context));
     }
 
     private static JsonObjectRequest buildRequest(String url, final Context context) {
@@ -57,6 +60,11 @@ public class WeatherRequestHandler {
                 message.obj = WeatherRequestParser.fromJson(response);
                 ArrayList<Weather> r = WeatherRequestParser.fromJson(response);
                 WeatherRequestParser.saveJson(r, context);
+                try {
+                    WeatherRequestParser.loadJson(context);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
                 requestHandler.handler.sendMessage(message);
             }
