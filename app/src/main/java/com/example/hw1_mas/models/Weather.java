@@ -55,7 +55,7 @@ public class Weather {
         this.day = day;
     }
 
-    public LinearLayout getWeatherLayout(Context context, ViewGroup parent) {
+    public LinearLayout getWeatherLayout(Context context) {
         LinearLayout linearLayout = new LinearLayout(context);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         float locationFontSize = 16f;
