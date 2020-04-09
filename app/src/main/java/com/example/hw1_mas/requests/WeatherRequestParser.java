@@ -1,8 +1,7 @@
 package com.example.hw1_mas.requests;
 
 import android.content.Context;
-import android.os.Environment;
-import android.util.JsonReader;
+
 import android.util.Log;
 
 import com.example.hw1_mas.models.Condition;
@@ -21,14 +20,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.EventListener;
-import java.util.Scanner;
 
 public class WeatherRequestParser {
     private static WeatherRequestParser requestParser;
@@ -39,7 +35,7 @@ public class WeatherRequestParser {
 
     }
 
-    public static void saveJson(ArrayList<Weather> weather, Context context) {
+    static void saveJson(ArrayList<Weather> weather, Context context) {
         Gson toJson = new GsonBuilder().setPrettyPrinting().create();
 
         String dayToJsonString = toJson.toJson(weather);
@@ -90,7 +86,7 @@ public class WeatherRequestParser {
         return weathers;
     }
 
-    public static ArrayList<Weather> fromJson(JSONObject weatherResponse) {
+    static ArrayList<Weather> fromJson(JSONObject weatherResponse) {
         Gson jsonReader = new Gson();
         JsonObject weatherObject = jsonReader.fromJson(weatherResponse.toString(), JsonObject.class);
         Weather current = jsonReader.fromJson(weatherObject.get("current"), Weather.class);

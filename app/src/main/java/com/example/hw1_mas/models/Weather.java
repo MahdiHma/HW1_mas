@@ -1,39 +1,17 @@
 package com.example.hw1_mas.models;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
-import android.os.Message;
 import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.ScrollView;
-import android.widget.TextClock;
 import android.widget.TextView;
 
-import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
-
-import java.nio.charset.Charset;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Scanner;
-
-import com.android.volley.Response;
-import com.android.volley.toolbox.ImageRequest;
-import com.example.hw1_mas.MainActivity;
-import com.example.hw1_mas.R;
-import com.example.hw1_mas.WeatherActivity;
-import com.google.gson.annotations.SerializedName;
 
 public class Weather {
     private String date;
@@ -56,6 +34,7 @@ public class Weather {
         return day;
     }
 
+    @SuppressLint("SimpleDateFormat")
     public void setDate() {
         String pattern = "EEE, MMM d HH:mm";
         if (date != null) {

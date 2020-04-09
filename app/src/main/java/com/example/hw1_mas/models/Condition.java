@@ -29,11 +29,11 @@ public class Condition {
         return state;
     }
 
-    public String getIconURL() {
+    private String getIconURL() {
         return "https:" + icon;
     }
 
-    public void getIconView(Context context, ImageView iconView) {
+    void getIconView(Context context, ImageView iconView) {
 
         new DownloadImageTask(iconView)
                 .execute(getIconURL());
@@ -43,7 +43,7 @@ public class Condition {
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         ImageView bmImage;
 
-        public DownloadImageTask(ImageView bmImage) {
+        DownloadImageTask(ImageView bmImage) {
             this.bmImage = bmImage;
         }
 
