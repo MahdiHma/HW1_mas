@@ -97,6 +97,7 @@ public class WeatherRequestParser {
         Day currentDay = new Day();
         currentDay.setCondition(jsonReader.fromJson(weatherObject.get("current").getAsJsonObject().get("condition"), Condition.class));
         current.setDay(currentDay);
+        current.setDate();
         Log.i("WeatherObject", weatherObject.toString());
         ArrayList<Weather> weathers = new ArrayList<>();
         weathers.add(current);
@@ -104,6 +105,7 @@ public class WeatherRequestParser {
         JsonArray forecastDay = (JsonArray) forecast.get("forecastday");
         for (JsonElement day : forecastDay) {
             Weather weatherN = jsonReader.fromJson(day, Weather.class);
+            weatherN.setDate();
             weathers.add(weatherN);
         }
         Log.i("test", weathers.toString());

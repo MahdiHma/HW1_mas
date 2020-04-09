@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Message;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +20,10 @@ import android.widget.TextView;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Scanner;
 
@@ -51,9 +55,33 @@ public class Weather {
         return day;
     }
 
+    public void setDate() {
+        String pattern = "EEE, MMM d HH:mm";
+        if (date != null) {
+            pattern = "EEE, MMM d";
+            String pattern1 = "yyyy-MM-dd";
+            SimpleDateFormat sdf = new SimpleDateFormat(pattern1);
+            Date date1 = sdf.parse(date, new ParsePosition(0));
+            sdf = new SimpleDateFormat(pattern);
+            date = sdf.format(date1);
+            return;
+        }
+
+        Calendar calendar = Calendar.getInstance();
+        Date now = calendar.getTime();
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        date = simpleDateFormat.format(now);
+
+
+    }
+
+
     public void setDay(Day day) {
         this.day = day;
+
     }
+
 
     public LinearLayout getWeatherLayout(Context context) {
         LinearLayout linearLayout = new LinearLayout(context);
@@ -61,7 +89,6 @@ public class Weather {
         float locationFontSize = 16f;
         linearLayout.setPadding(10, 10, 10, 10);
         linearLayout.setDividerPadding(10);
-
         linearLayout.addView(getTextView(context, date != null ? date : "", locationFontSize));
         linearLayout.addView(getIconView(context));
         float temperatureFontSize = 10f;
@@ -82,6 +109,7 @@ public class Weather {
         textView.setText(text);
         textView.setTextColor(Color.DKGRAY);
         textView.setTextSize(fontSize);
+        textView.setGravity(Gravity.CENTER);
         return textView;
     }
 
