@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     EditText locationSearchBox;
     TextView searchErrorTv;
     Button searchBtn;
+    LinearLayout llMain;
     LinearLayout llResults;
 
     @SuppressLint("HandlerLeak")
@@ -67,10 +68,10 @@ public class MainActivity extends AppCompatActivity {
                     showCities((ArrayList<City>) msg.obj);
                     break;
                 case SHOW_WAITING_BAR:
-                    progressBar.setVisibility(View.VISIBLE);
+                    showProgressBar();
                     break;
                 case UNSHOW_WAITING__BAR:
-                    progressBar.setVisibility(View.INVISIBLE);
+                    hideProgressBar();
                     break;
                 case SEARCH_NOT_FOUND:
                     searchErrorTv.setText(R.string.city_not_found);
@@ -95,8 +96,10 @@ public class MainActivity extends AppCompatActivity {
         locationSearchBox = findViewById(R.id.et_location_search);
         searchErrorTv = findViewById(R.id.tv_search_error);
         searchBtn = findViewById(R.id.btn_search);
+        llMain = findViewById(R.id.ll_main);
         llResults = findViewById(R.id.ll_results);
         progressBar = findViewById(R.id.pb_results);
+        hideProgressBar();
         if (!checkInternetConnectivity()) {
             showInternetNotConnectedError();
             switchPage(null, false);
@@ -107,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String searchQuery = locationSearchBox.getText().toString();
                 searchErrorTv.setText("");
-                progressBar.setVisibility(View.VISIBLE);
+                showProgressBar();
                 MapBoxRequestHandler.handleNewRequest(requestQueue, mHandler,searchQuery);
             }
         });
@@ -153,5 +156,11 @@ public class MainActivity extends AppCompatActivity {
     private void showInternetNotConnectedError() {
         Toast toast = Toast.makeText(getApplicationContext(), R.string.no_internet_connection, Toast.LENGTH_LONG);
         toast.show();
+    }
+    private void showProgressBar(){
+        llMain.addView(progressBar,3);
+    }
+    private void hideProgressBar(){
+        llMain.removeView(progressBar);
     }
 }
